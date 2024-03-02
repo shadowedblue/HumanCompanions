@@ -1,0 +1,59 @@
+package com.github.justinwon777.humancompanions.entity.ai;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+public class AlertHostileGoal<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
+    public AlertHostileGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee) {
+        super(pMob, pTargetType, pMustSee);
+    }
+
+    public AlertHostileGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, Predicate<LivingEntity> pTargetPredicate) {
+        super(pMob, pTargetType, pMustSee, pTargetPredicate);
+    }
+
+    public AlertHostileGoal(Mob pMob, Class<T> pTargetType, boolean pMustSee, boolean pMustReach) {
+        super(pMob, pTargetType, pMustSee, pMustReach);
+    }
+
+    public AlertHostileGoal(Mob pMob, Class<T> pTargetType, int pRandomInterval, boolean pMustSee, boolean pMustReach, @Nullable Predicate<LivingEntity> pTargetPredicate) {
+        super(pMob, pTargetType, pRandomInterval, pMustSee, pMustReach, pTargetPredicate);
+    }
+
+    @Override
+    protected void findTarget() {
+        if (this.targetType != Player.class && this.targetType != ServerPlayer.class) {
+            var nearbyEntities = this.mob.level.getEntities(this.mob, this.getTargetSearchArea(this.getFollowDistance()));
+            var nearestPlayer = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+            var livingEntities = nearbyEntities.stream().map(e -> {
+                var isHostile = false;
+                if (e instanceof Animal animal && !(e instanceof TamableAnimal)) {
+                    if (animal.isAggressive() && (animal.getTarget() == nearestPlayer || animal.getTarget() == this.mob))
+                        isHostile = true;
+                } else if (e instanceof LivingEntity) {
+                    isHostile = e.getType().getCategory() == MobCategory.MONSTER;
+                }
+                if (isHostile)
+                    return (LivingEntity) e;
+                return null;
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+
+            this.target = this.mob.level.getNearestEntity(livingEntities, this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+        } else {
+            this.target = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+        }
+    }
+}
