@@ -103,10 +103,10 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
         ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
         this.getNavigation().setCanFloat(true);
         for (int i = 0; i < CompanionData.alertMobs.length; i++) {
-            alertMobGoals.add(new NearestAttackableTargetGoal(this, CompanionData.alertMobs[i], false));
+            alertMobGoals.add(new AlertHostileGoal(this, CompanionData.alertMobs[i], false));
         }
         for (int i = 0; i < CompanionData.huntMobs.length; i++) {
-            huntMobGoals.add(new NearestAttackableTargetGoal(this, CompanionData.huntMobs[i], false));
+            huntMobGoals.add(new AlertHostileGoal(this, CompanionData.huntMobs[i], false));
         }
     }
 
