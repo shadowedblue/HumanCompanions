@@ -41,10 +41,8 @@ public class AlertHostileGoal<T extends LivingEntity> extends NearestAttackableT
                     var target = animal.getTarget() != null ? animal.getTarget() : null;
                     if (target != null && (target.getType() == EntityType.PLAYER || target.getType() == this.mob.getType()))
                         isHostile = true;
-                } else if (e instanceof Monster monster) {
-                    var target = monster.getTarget() != null ? monster.getTarget() : null;
-                    if (target != null && (target.getType() == EntityType.PLAYER || target.getType() == this.mob.getType()))
-                        isHostile = true;
+                } else if (e instanceof Monster) {
+                    isHostile = true;
                 }
                 if (isHostile)
                     return (LivingEntity) e;
