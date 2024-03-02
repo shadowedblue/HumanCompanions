@@ -38,7 +38,7 @@ public class AlertHostileGoal<T extends LivingEntity> extends NearestAttackableT
             var livingEntities = nearbyEntities.stream().map(e -> {
                 var isHostile = false;
                 if (e instanceof Animal animal && !(e instanceof TamableAnimal ta && ta.isTame())) {
-                    var target = animal.getTarget() != null ? animal.getTarget() : null;
+                    var target = animal.getTarget();
                     if (target != null && (target.getType() == EntityType.PLAYER || target.getType() == this.mob.getType()))
                         isHostile = true;
                 } else if (e instanceof Monster) {
