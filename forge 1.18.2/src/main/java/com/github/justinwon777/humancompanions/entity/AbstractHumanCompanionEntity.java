@@ -106,7 +106,7 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             alertMobGoals.add(new AlertHostileGoal(this, CompanionData.alertMobs[i], false));
         }
         for (int i = 0; i < CompanionData.huntMobs.length; i++) {
-            huntMobGoals.add(new AlertHostileGoal(this, CompanionData.huntMobs[i], false));
+            huntMobGoals.add(new NearestAttackableTargetGoal(this, CompanionData.huntMobs[i], false));
         }
     }
 
