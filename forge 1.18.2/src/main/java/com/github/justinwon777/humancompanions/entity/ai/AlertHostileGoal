@@ -35,14 +35,16 @@ public class AlertHostileGoal<T extends LivingEntity> extends NearestAttackableT
     protected void findTarget() {
         if (this.targetType != Player.class && this.targetType != ServerPlayer.class) {
             var nearbyEntities = this.mob.level.getEntities(this.mob, this.getTargetSearchArea(this.getFollowDistance()));
-            var nearestPlayer = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
             var livingEntities = nearbyEntities.stream().map(e -> {
                 var isHostile = false;
                 if (e instanceof Animal animal && !(e instanceof TamableAnimal && ((TamableAnimal) e).isTame())) {
-                    if (animal.isAggressive() && (animal.getTarget() == nearestPlayer || animal.getTarget() == this.mob))
+                    var target = animal.getTarget() != null ? animal.getTarget() : null;
+                    if (target != null && (target.getType() == EntityType.PLAYER || target.getType() == this.mob.getType()))
                         isHostile = true;
-                } else if (e instanceof LivingEntity) {
-                    isHostile = e.getType().getCategory() == MobCategory.MONSTER;
+                } else if (e instanceof Monster monster) {
+                    var target = monster.getTarget() != null ? monster.getTarget() : null;
+                    if (target != null && (target.getType() == EntityType.PLAYER || target.getType() == this.mob.getType()))
+                        isHostile = true;
                 }
                 if (isHostile)
                     return (LivingEntity) e;
