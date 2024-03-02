@@ -426,7 +426,8 @@ public class AbstractHumanCompanionEntity extends TamableAnimal {
             return false;
         }
 
-        hurtArmor(p_34288_, p_34289_);
+        if (!p_34288_.isBypassArmor())
+            hurtArmor(p_34288_, p_34289_);
         return super.hurt(p_34288_, p_34289_);
     }
 
