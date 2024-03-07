@@ -114,6 +114,13 @@ public class CompanionData {
             Raider.class
     };
 
+    public static EntityType<?>[] aggroMobs = new EntityType[]{
+            EntityType.ENDERMAN,
+            EntityType.ZOGLIN,
+            EntityType.ZOMBIFIED_PIGLIN,
+            EntityType.PIGLIN
+    };
+
     public static Class<?>[] huntMobs = new Class<?>[]{
             Chicken.class,
             Cow.class,
